@@ -1,5 +1,5 @@
-import { useApp } from '../context/AppContext';
-import { useNavigate } from 'react-router-dom';
+import { useApp } from "../context/AppContext";
+import { useNavigate } from "react-router-dom";
 
 export default function TopBar({ title, showLogout = false }) {
   const { currentUser, isAdmin, logout } = useApp();
@@ -7,21 +7,27 @@ export default function TopBar({ title, showLogout = false }) {
 
   function handleLogout() {
     logout();
-    navigate('/');
+    navigate("/");
   }
 
   return (
     <header className="bg-slate-900 border-b border-slate-800 px-6 py-3 flex items-center justify-between sticky top-0 z-10">
-      {/* Logo */}
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-indigo-900/60 border border-indigo-700/40 flex items-center justify-center text-indigo-300 font-bold text-sm">
+          {currentUser?.name?.[0]?.toUpperCase()}
+        </div>
+        <div>
+          <p className="text-slate-200 font-semibold text-sm">
+            {title}
+          </p>
+          {currentUser?.uniqueId ? <p className="text-slate-600 text-xs">ID: {currentUser?.uniqueId}</p>: ""}
+        </div>
+      </div>
+
       <span className="text-indigo-400 font-bold text-lg tracking-tight">
         ✦ BlogFlow
       </span>
 
-      {/* Page Title */}
-     
-      <span className="text-slate-400 text-sm hidden sm:block">{title}</span>
-
-      {/* Right side */}
       <div className="flex items-center gap-3">
         {showLogout && (
           <button

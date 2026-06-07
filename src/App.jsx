@@ -1,11 +1,16 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AppProvider } from './context/AppContext';
-import { UserProtectedRoute, AdminProtectedRoute } from './routes/ProtectedRoute';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AppProvider } from "./context/AppContext";
+import {
+  UserProtectedRoute,
+  AdminProtectedRoute,
+} from "./routes/ProtectedRoute";
 
-import UserAuth from './pages/UserAuth';
-import AdminLogin from './pages/AdminLogin';
-import CreateBlog from './pages/CreateBlog';
-import AdminDashboard from './pages/AdminDashboard';
+import GeminiBlogHero from "./components/GeminiBlogHero";
+import UserAuth from "./pages/UserAuth";
+import AdminLogin from "./pages/AdminLogin";
+import CreateBlog from "./pages/CreateBlog";
+import AdminDashboard from "./pages/AdminDashboard";
+import AllBlog from "./pages/AllBlog";
 
 export default function App() {
   return (
@@ -13,7 +18,8 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           {/* Public routes */}
-          <Route path="/" element={<UserAuth />} />
+          <Route path="/" element ={<GeminiBlogHero/>}/>
+          <Route path="/welcome" element={<UserAuth />} />
           <Route path="/admin-login" element={<AdminLogin />} />
 
           {/* Protected user route */}
@@ -21,10 +27,12 @@ export default function App() {
             path="/create-blog"
             element={
               // <UserProtectedRoute>
-                <CreateBlog />
+              <CreateBlog />
               // </UserProtectedRoute>
             }
           />
+
+          <Route path="/all-blog" element={<AllBlog />} />
 
           {/* Protected admin route */}
           <Route

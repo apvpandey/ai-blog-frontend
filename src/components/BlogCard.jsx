@@ -1,26 +1,40 @@
-import { useState } from 'react';
+import { useState } from "react";
+import { useApp } from "../context/AppContext";
 
-export default function BlogCard({ blog, onDelete, onEdit, showAuthor = false }) {
+export default function BlogCard({
+  blog,
+  onDelete,
+  onEdit,
+  showAuthor = false,
+}) {
+  const { currentUser } = useApp();
+
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(blog.title);
   const [content, setContent] = useState(blog.content);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
-  function handleSave() {
+  async function handleSave() {
     if (!title.trim() || !content.trim()) {
-      setError('Both title and content are required.');
+      setError("Both title and content are required.");
       return;
     }
-    onEdit(blog.id, title, content);
-    setEditing(false);
-    setError('');
+
+    const result = await onEdit(blog._id, title, content);
+
+    if (result.success) {
+      setEditing(false);
+      setError("");
+    } else {
+      setError(result.error || "Failed to update blog");
+    }
   }
 
   function handleCancel() {
     setTitle(blog.title);
     setContent(blog.content);
     setEditing(false);
-    setError('');
+    setError("");
   }
 
   if (editing) {
@@ -33,6 +47,7 @@ export default function BlogCard({ blog, onDelete, onEdit, showAuthor = false })
           placeholder="Blog title"
           className="w-full mb-3 px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-100 text-sm outline-none focus:border-indigo-500 transition-colors"
         />
+
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
@@ -40,7 +55,13 @@ export default function BlogCard({ blog, onDelete, onEdit, showAuthor = false })
           rows={5}
           className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-100 text-sm outline-none focus:border-indigo-500 transition-colors resize-y"
         />
-        {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
+
+        {error && (
+          <p className="text-red-400 text-xs mt-2">
+            {error}
+          </p>
+        )}
+
         <div className="flex gap-2 mt-3">
           <button
             onClick={handleSave}
@@ -48,6 +69,7 @@ export default function BlogCard({ blog, onDelete, onEdit, showAuthor = false })
           >
             Save Changes
           </button>
+
           <button
             onClick={handleCancel}
             className="text-xs px-4 py-1.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 transition-colors"
@@ -61,44 +83,52 @@ export default function BlogCard({ blog, onDelete, onEdit, showAuthor = false })
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 hover:border-slate-700 transition-colors">
-      {/* Title */}
-      <h3 className="text-slate-100 font-semibold text-base mb-2">{blog.title}</h3>
+      <h3 className="text-slate-100 font-semibold text-base mb-2">
+        {blog.title}
+      </h3>
 
-      {/* Content */}
-      <p className="text-slate-400 text-sm leading-relaxed line-clamp-3">{blog.content}</p>
+      <p className="text-slate-400 text-sm leading-relaxed line-clamp-3">
+        {blog.content}
+      </p>
 
-      {/* Meta */}
       <div className="flex flex-wrap items-center gap-2 mt-3">
-        <span className="text-xs bg-slate-800 text-slate-500 rounded-md px-2 py-0.5 border border-slate-700">
-          #{blog.id}
+        <span className="text-xs bg-indigo-900/40 text-indigo-400 rounded-md px-2 py-0.5">
+          {currentUser?.uniqueId === blog.userId?.uniqueId
+            ? "YOU"
+            : `@${blog.userId?.name}`}
         </span>
-        {showAuthor && (
-          <span className="text-xs bg-indigo-900/40 text-indigo-400 rounded-md px-2 py-0.5">
-            @{blog.userName}
-          </span>
-        )}
-        <span className="text-xs text-slate-600">{blog.createdAt}</span>
+
+        <span className="text-xs text-slate-600">
+          {new Date(blog.createdAt).toLocaleDateString("en-IN", {
+            timeZone: "Asia/Kolkata",
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          })}
+        </span>
       </div>
 
-      {/* Actions */}
-      <div className="flex gap-2 mt-3">
-        {onEdit && (
-          <button
-            onClick={() => setEditing(true)}
-            className="text-xs px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/20 transition-colors"
-          >
-            ✏️ Edit
-          </button>
-        )}
-        {onDelete && (
-          <button
-            onClick={() => onDelete(blog.id)}
-            className="text-xs px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors"
-          >
-            🗑️ Delete
-          </button>
-        )}
-      </div>
+      {currentUser?.uniqueId === blog.userId?.uniqueId && (
+        <div className="flex gap-2 mt-3">
+          {onEdit && (
+            <button
+              onClick={() => setEditing(true)}
+              className="text-xs px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/20 transition-colors"
+            >
+              ✏️ Edit
+            </button>
+          )}
+
+          {onDelete && (
+            <button
+              onClick={() => onDelete(blog._id)}
+              className="text-xs px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors"
+            >
+              🗑️ Delete
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

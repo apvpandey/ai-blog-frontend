@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useApp } from "../context/AppContext";
+import { useNavigate } from "react-router-dom";
 import TopBar from "../components/TopBar";
 import BlogCard from "../components/BlogCard";
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -260,6 +261,7 @@ function AIGenerateModal({ onClose, onUse }) {
 // ─── Main CreateBlog Page ─────────────────────────────────────
 
 export default function CreateBlog() {
+  const navigate = useNavigate();
   const { currentUser, createBlog, editBlog, deleteBlog, getMyBlogs } =
     useApp();
 
@@ -275,12 +277,13 @@ export default function CreateBlog() {
     setTimeout(() => setMessage(null), 3000);
   }
 
-  function handlePost() {
+  async function handlePost() {
     if (!title.trim()) return showMsg("error", "Please enter a blog title.");
     if (!content.trim()) return showMsg("error", "Please enter blog content.");
 
-    const result = createBlog(title, content);
+    const result = await createBlog(title, content);
     if (result.success) {
+      navigate("/all-blog");
       setTitle("");
       setContent("");
       showMsg("success", "Blog posted successfully! 🎉");
@@ -295,15 +298,12 @@ export default function CreateBlog() {
     showMsg("success", "AI content loaded! Review and post when ready. ✨");
   }
 
-
-
   return (
     <div className="min-h-screen bg-slate-950">
       <TopBar title={`Hi, ${currentUser?.name} 👋`} showLogout />
 
       <div className="max-w-2xl mx-auto px-4 py-8">
-        {/* User info bar */}
-        <div className="flex items-center gap-3 mb-6">
+        {/* <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-full bg-indigo-900/60 border border-indigo-700/40 flex items-center justify-center text-indigo-300 font-bold text-sm">
             {currentUser?.name?.[0]?.toUpperCase()}
           </div>
@@ -318,7 +318,7 @@ export default function CreateBlog() {
           <span className="ml-auto text-xs bg-indigo-900/30 text-indigo-400 border border-indigo-700/30 px-2 py-1 rounded-lg">
             {myBlogs.length} blog{myBlogs.length !== 1 ? "s" : ""}
           </span>
-        </div>
+        </div> */}
 
         {/* Create blog form */}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-8">
@@ -366,48 +366,26 @@ export default function CreateBlog() {
           </div>
 
           {/* Buttons */}
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 w-full">
             <button
               onClick={handlePost}
-              className="px-6 py-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-500 transition-all text-sm font-semibold shadow-lg shadow-indigo-900/30"
+              className="w-full sm:w-auto flex-1 px-6 py-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-500 transition-all duration-200 text-sm font-semibold shadow-lg shadow-indigo-900/30"
             >
               📝 Post Blog
             </button>
 
             <button
               onClick={() => setShowAIModal(true)}
-              className="px-6 py-3 rounded-xl bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:border-indigo-500/50 hover:text-indigo-300 transition-all text-sm font-semibold flex items-center gap-2"
+              className="w-full sm:w-auto flex-1 px-6 py-3 rounded-xl bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:border-indigo-500/50 hover:text-indigo-300 transition-all duration-200 text-sm font-semibold flex items-center justify-center gap-2"
             >
-              ✨ Generate with AI
+              <img
+                src="/gemini-icon.svg"
+                alt="Gemini"
+                className="w-5 h-5 object-contain"
+              />
+              <span>Generate with AI</span>
             </button>
           </div>
-        </div>
-
-        {/* Blog list */}
-        <div>
-          <h2 className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-4">
-            My Blogs ({myBlogs.length})
-          </h2>
-
-          {myBlogs.length === 0 ? (
-            <div className="text-center py-16 text-slate-600">
-              <div className="text-4xl mb-3">📝</div>
-              <p className="text-sm">
-                No blogs yet. Write your first one above!
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {[...myBlogs].reverse().map((blog) => (
-                <BlogCard
-                  key={blog.id}
-                  blog={blog}
-                  onDelete={deleteBlog}
-                  onEdit={editBlog}
-                />
-              ))}
-            </div>
-          )}
         </div>
       </div>
 

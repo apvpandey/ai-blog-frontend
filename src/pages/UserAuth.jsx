@@ -42,11 +42,13 @@ export default function UserAuth() {
 
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col">
-      {/* Top bar */}
       <header className="bg-slate-900 border-b border-slate-800 px-6 py-3 flex items-center justify-between">
-        <span className="text-indigo-400 font-bold text-lg tracking-tight">
+        <button
+          onClick={() => navigate("/")}
+          className="text-indigo-400 font-bold text-lg tracking-tight"
+        >
           ✦ BlogFlow
-        </span>
+        </button>
         <button
           onClick={() => navigate("/admin-login")}
           className="text-xs px-4 py-2 rounded-lg border border-indigo-500 text-indigo-400 hover:bg-indigo-500 hover:text-white transition-all font-medium"

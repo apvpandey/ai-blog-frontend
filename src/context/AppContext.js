@@ -2,36 +2,16 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { getFromStorage, saveToStorage, generateId } from "../utils/storage";
 import axios from "axios";
 
-const ADMIN_CREDENTIALS = {
-  name: "Admin",
-  phone: "9999999999",
-};
-
 const AppContext = createContext(null);
 
 export function AppProvider({ children }) {
   const [users, setUsers] = useState(() => getFromStorage("blog_users", []));
-  const [blogs, setBlogs] = useState(() => getFromStorage("blog_posts", []));
   const [currentUser, setCurrentUser] = useState(() =>
     getFromStorage("current_user", null),
   );
   const [isAdmin, setIsAdmin] = useState(() =>
     getFromStorage("is_admin", false),
   );
-
-  // Persist to localStorage whenever state changes
-  useEffect(() => {
-    saveToStorage("blog_users", users);
-  }, [users]);
-  useEffect(() => {
-    saveToStorage("blog_posts", blogs);
-  }, [blogs]);
-  useEffect(() => {
-    saveToStorage("current_user", currentUser);
-  }, [currentUser]);
-  useEffect(() => {
-    saveToStorage("is_admin", isAdmin);
-  }, [isAdmin]);
 
   // Register a new user
 
@@ -44,7 +24,7 @@ export function AppProvider({ children }) {
         },
       );
 
-      console.log(data.user);
+   
       setCurrentUser(data.user);
 
       return {
@@ -120,33 +100,51 @@ export function AppProvider({ children }) {
   }
 
   // Create a blog post
-  function createBlog(title, content) {
-    if (!currentUser) return { success: false, error: "Not logged in." };
-    const blog = {
-      id: generateId(),
-      userId: currentUser.id,
-      userName: currentUser.name,
-      title: title.trim(),
-      content: content.trim(),
-      createdAt: new Date().toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }),
-    };
-    setBlogs((prev) => [...prev, blog]);
-    return { success: true, blog };
+  async function createBlog(title, content) {
+    try {
+      if (!currentUser) {
+        return { success: false, error: "Not logged in." };
+      }
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/blogs`,
+        {
+          userId: currentUser._id,
+          title: title.trim(),
+          content: content.trim(),
+        },
+      );
+
+      return {
+        success: true,
+        blog: data.blog,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || error.message,
+      };
+    }
   }
 
   // Edit a blog post
-  function editBlog(blogId, title, content) {
-    setBlogs((prev) =>
-      prev.map((b) =>
-        b.id === blogId
-          ? { ...b, title: title.trim(), content: content.trim() }
-          : b,
-      ),
-    );
+  async function editBlog(blogId, title, content) {
+    try {
+
+      const { data } = await axios.put(
+        `${process.env.REACT_APP_BACKEND_URL}/blogs/${blogId}`,
+        {
+          title: title,
+          content: content,
+        },
+      );
+
+      return { success: true, blog: data };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || "Failed to update blog",
+      };
+    }
   }
 
   // Delete a blog post
@@ -160,16 +158,37 @@ export function AppProvider({ children }) {
   }
 
   // Get all blogs for current logged-in user
-  function getMyBlogs() {
-    if (!currentUser) return [];
-    return blogs.filter((b) => b.userId === currentUser.id);
+  async function getMyBlogs() {
+    try {
+      if (!currentUser) return [];
+
+      const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/user/${currentUser.id}`);
+
+      return data.blogs;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
+
+  async function getAllBlog() {
+    try {
+      if (!currentUser) return [];
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/blogs/all`,
+      );
+      return data;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
   }
 
   return (
     <AppContext.Provider
       value={{
         users,
-        blogs,
+        // blogs,
         currentUser,
         isAdmin,
         registerUser,
@@ -181,6 +200,7 @@ export function AppProvider({ children }) {
         deleteBlog,
         getBlogsByUser,
         getMyBlogs,
+        getAllBlog,
       }}
     >
       {children}
