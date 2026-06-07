@@ -24,8 +24,8 @@ export function AppProvider({ children }) {
         },
       );
 
-   
       setCurrentUser(data.user);
+      saveToStorage("current_user", data.user);
 
       return {
         success: true,
@@ -53,6 +53,7 @@ export function AppProvider({ children }) {
       );
 
       setCurrentUser(data.data);
+      saveToStorage("current_user", data.data);
 
       return {
         success: true,
@@ -129,7 +130,6 @@ export function AppProvider({ children }) {
   // Edit a blog post
   async function editBlog(blogId, title, content) {
     try {
-
       const { data } = await axios.put(
         `${process.env.REACT_APP_BACKEND_URL}/blogs/${blogId}`,
         {
@@ -162,7 +162,9 @@ export function AppProvider({ children }) {
     try {
       if (!currentUser) return [];
 
-      const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/user/${currentUser.id}`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/user/${currentUser.id}`,
+      );
 
       return data.blogs;
     } catch (error) {

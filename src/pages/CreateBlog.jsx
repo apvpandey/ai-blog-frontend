@@ -270,7 +270,7 @@ export default function CreateBlog() {
   const [message, setMessage] = useState(null);
   const [showAIModal, setShowAIModal] = useState(false);
 
-  const myBlogs = getMyBlogs();
+  // const myBlogs = getMyBlogs();
 
   function showMsg(type, text) {
     setMessage({ type, text });

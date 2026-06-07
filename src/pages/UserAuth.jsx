@@ -30,7 +30,7 @@ export default function UserAuth() {
     if (!name.trim()) return showMsg("error", "Please enter your full name.");
     const result = await loginUser(name);
     if (result.success) {
-      navigate("/create-blog");
+      navigate("/all-blog");
     } else {
       showMsg("error", result.error);
     }
