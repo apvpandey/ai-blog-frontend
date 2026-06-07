@@ -65,14 +65,24 @@ export default function AdminDashboard() {
       <TopBar title="Admin Dashboard" showLogout />
 
       <div className="flex h-[calc(100vh-57px)]">
-        <aside className="w-72 bg-slate-900 border-r border-slate-800 flex flex-col overflow-hidden">
+        {/* Sidebar */}
+        <aside
+          className={`
+      ${selectedUser ? "hidden md:flex" : "flex"}
+      w-full md:w-72
+      bg-slate-900
+      border-r border-slate-800
+      flex-col
+      overflow-hidden
+    `}
+        >
           <div className="px-4 py-4 border-b border-slate-800">
             <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
               Registered Users ({users.length})
             </h2>
           </div>
 
-          <div className="overflow-y-auto flex-1 p-3 space-y-1">
+          <div className="flex-1 overflow-y-auto p-3 space-y-1">
             {users.length === 0 ? (
               <p className="text-slate-600 text-sm text-center py-8">
                 No users found.
@@ -101,11 +111,9 @@ export default function AdminDashboard() {
                           {user.name}
                         </p>
 
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-xs text-slate-600">
-                            ID: {user.uniqueId}
-                          </span>
-                        </div>
+                        <span className="text-xs text-slate-600">
+                          ID: {user.uniqueId}
+                        </span>
                       </div>
                     </div>
                   </button>
@@ -115,9 +123,24 @@ export default function AdminDashboard() {
           </div>
         </aside>
 
-        <main className="flex-1 overflow-y-auto p-6">
+        {/* Content */}
+        <main
+          className={`
+      ${selectedUser ? "flex" : "hidden md:flex"}
+      flex-1 flex-col overflow-y-auto bg-slate-950
+    `}
+        >
           {selectedUser ? (
-            <>
+            <div className="p-4 md:p-6">
+              {/* Mobile Back Button */}
+              <button
+                onClick={() => setSelectedUser(null)}
+                className="md:hidden mb-5 flex items-center gap-2 text-sm text-slate-400 hover:text-white"
+              >
+                ← Back to Users
+              </button>
+
+              {/* User Header */}
               <div className="flex items-center gap-4 mb-6 pb-5 border-b border-slate-800">
                 <div className="w-12 h-12 rounded-full bg-indigo-900/50 border border-indigo-700/40 flex items-center justify-center text-indigo-300 font-bold text-lg">
                   {selectedUser?.name?.[0]?.toUpperCase()}
@@ -128,7 +151,7 @@ export default function AdminDashboard() {
                     {selectedUser.name}
                   </h2>
 
-                  <div className="flex items-center gap-3 mt-1">
+                  <div className="flex flex-wrap items-center gap-2 mt-1">
                     <span className="text-xs bg-slate-800 text-slate-500 border border-slate-700 rounded-md px-2 py-0.5">
                       ID: {selectedUser.uniqueId}
                     </span>
@@ -147,7 +170,7 @@ export default function AdminDashboard() {
 
               {loadingBlogs ? (
                 <div className="flex justify-center py-10">
-                  <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : selectedBlogs.length === 0 ? (
                 <div className="text-center py-16 text-slate-600">
@@ -155,7 +178,7 @@ export default function AdminDashboard() {
                   <p className="text-sm">This user has no blogs yet.</p>
                 </div>
               ) : (
-                <div className="space-y-3 max-w-2xl">
+                <div className="space-y-3">
                   {[...selectedBlogs].reverse().map((blog) => (
                     <BlogCard
                       key={blog._id}
@@ -166,13 +189,13 @@ export default function AdminDashboard() {
                   ))}
                 </div>
               )}
-            </>
+            </div>
           ) : (
-            <div className="h-full flex flex-col items-center justify-center text-slate-600">
-              <div className="text-5xl mb-4">👤</div>
-              <p className="text-sm">
-                Select a user from the sidebar to view their blogs.
-              </p>
+            <div className="hidden md:flex h-full items-center justify-center text-slate-600">
+              <div className="text-center">
+                <div className="text-5xl mb-4">👤</div>
+                <p>Select a user from the sidebar to view their blogs.</p>
+              </div>
             </div>
           )}
         </main>

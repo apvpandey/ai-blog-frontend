@@ -3,6 +3,7 @@ import { useApp } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
 import TopBar from "../components/TopBar";
 import BlogCard from "../components/BlogCard";
+import geminiIcon from "../assets/images/google-gemini-icon.png";
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_KEY);
@@ -364,7 +365,7 @@ export default function CreateBlog() {
               className="w-full sm:w-auto flex-1 px-6 py-3 rounded-xl bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:border-indigo-500/50 hover:text-indigo-300 transition-all duration-200 text-sm font-semibold flex items-center justify-center gap-2"
             >
               <img
-                src="/gemini-icon.svg"
+                src={geminiIcon}
                 alt="Gemini"
                 className="w-5 h-5 object-contain"
               />
