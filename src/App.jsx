@@ -17,8 +17,7 @@ export default function App() {
     <AppProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public routes */}
-          <Route path="/" element ={<GeminiBlogHero/>}/>
+          <Route path="/" element={<GeminiBlogHero />} />
           <Route path="/welcome" element={<UserAuth />} />
           <Route path="/admin-login" element={<AdminLogin />} />
 
@@ -26,15 +25,14 @@ export default function App() {
           <Route
             path="/create-blog"
             element={
-              // <UserProtectedRoute>
-              <CreateBlog />
-              // </UserProtectedRoute>
+              <UserProtectedRoute>
+                <CreateBlog />
+              </UserProtectedRoute>
             }
           />
 
           <Route path="/all-blog" element={<AllBlog />} />
 
-          {/* Protected admin route */}
           <Route
             path="/admin-dashboard"
             element={

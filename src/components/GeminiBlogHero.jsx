@@ -137,12 +137,9 @@ export default function GeminiBlogHero() {
           "radial-gradient(ellipse at 65% 40%, rgba(99,102,241,0.07) 0%, transparent 55%), #0d1117",
       }}
     >
-      {/* Hero Section */}
       <section className="flex-1 flex items-center w-full px-6 sm:px-12 lg:px-20 xl:px-32 py-16 sm:py-24">
         <div className="w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12 md:gap-8">
-          {/* Left Content */}
           <div className="flex flex-col gap-6 w-full md:w-1/2 xl:w-[52%] text-center md:text-left">
-            {/* Heading */}
             <div className="animate-fadein1">
               <h1
                 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight"
@@ -154,14 +151,12 @@ export default function GeminiBlogHero() {
               </h1>
             </div>
 
-            {/* Description */}
             <p className="animate-fadein2 text-slate-400 text-base sm:text-lg leading-relaxed max-w-lg mx-auto md:mx-0">
               Transform your ideas into engaging blog posts effortlessly with
               the power of Gemini. Just share your topic, and let AI handle the
               writing while you focus on what matters most.
             </p>
 
-            {/* CTA Button */}
             <div className="animate-fadein3 flex justify-center md:justify-start">
               <button
                 onClick={() => navigate("/welcome")}
@@ -192,12 +187,10 @@ export default function GeminiBlogHero() {
             </div>
           </div>
 
-          {/* Right: Gemini Visual */}
           <div
             className="animate-fadein1 relative flex-shrink-0 flex items-center justify-center w-full md:w-1/2 xl:w-[44%]"
             style={{ height: "min(320px, 60vw)" }}
           >
-            {/* Sparkles */}
             <div
               className="absolute animate-twinkle1 z-20"
               style={{ top: "8%", left: "8%" }}

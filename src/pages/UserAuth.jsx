@@ -7,7 +7,7 @@ export default function UserAuth() {
   const { registerUser, loginUser } = useApp();
 
   const [name, setName] = useState("");
-  const [message, setMessage] = useState(null); // { type: 'success'|'error', text: '' }
+  const [message, setMessage] = useState(null);
 
   function showMsg(type, text) {
     setMessage({ type, text });
@@ -20,7 +20,7 @@ export default function UserAuth() {
 
     console.log("result", result);
     if (result.success) {
-      navigate("/create-blog");
+      navigate("/all-blog");
     } else {
       showMsg("error", result.error);
     }
@@ -57,10 +57,8 @@ export default function UserAuth() {
         </button>
       </header>
 
-      {/* Center card */}
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
-          {/* Heading */}
           <div className="mb-8 text-center">
             <h1 className="text-2xl font-bold text-slate-100 mb-2">
               Welcome to BlogFlow
@@ -70,7 +68,6 @@ export default function UserAuth() {
             </p>
           </div>
 
-          {/* Alert */}
           {message && (
             <div
               className={`mb-5 px-4 py-3 rounded-lg text-sm ${
@@ -83,7 +80,6 @@ export default function UserAuth() {
             </div>
           )}
 
-          {/* Name field */}
           <div className="mb-6">
             <label className="block text-slate-400 text-sm mb-2 font-medium">
               Full Name
@@ -101,7 +97,6 @@ export default function UserAuth() {
             />
           </div>
 
-          {/* Buttons */}
           <div className="flex gap-3">
             <button
               onClick={handleLogin}

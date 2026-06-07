@@ -66,6 +66,7 @@ export function AppProvider({ children }) {
       };
     }
   }
+
   // Admin login
   async function loginAdmin(name, phoneNo) {
     try {
@@ -78,6 +79,7 @@ export function AppProvider({ children }) {
       );
 
       setIsAdmin(true);
+      saveToStorage("is_admin", true);
 
       return {
         success: true,
@@ -98,6 +100,7 @@ export function AppProvider({ children }) {
   function logout() {
     setCurrentUser(null);
     setIsAdmin(false);
+    localStorage.clear();
   }
 
   // Create a blog post
@@ -148,16 +151,38 @@ export function AppProvider({ children }) {
   }
 
   // Delete a blog post
-  function deleteBlog(blogId) {
-    setBlogs((prev) => prev.filter((b) => b.id !== blogId));
+  async function deleteBlog(blogId) {
+    try {
+    await axios.delete(
+      `${process.env.REACT_APP_BACKEND_URL}/blogs/${blogId}`
+    );
+
+    return { success: true };
+  } catch (error) {
+    console.error("Delete blog error:", error);
+
+    return {
+      success: false,
+      error: error.response?.data?.message || "Failed to delete blog",
+    };
+  }
   }
 
-  // Get blogs for a specific user
-  function getBlogsByUser(userId) {
-    return blogs.filter((b) => b.userId === userId);
+  async function getBlogsByUser(userId) {
+    try {
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/blogs/user/${userId}`,
+      );
+
+      return data;
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || "Failed to fetch blogs",
+      };
+    }
   }
 
-  // Get all blogs for current logged-in user
   async function getMyBlogs() {
     try {
       if (!currentUser) return [];
@@ -186,10 +211,24 @@ export function AppProvider({ children }) {
     }
   }
 
+  async function getAllUser() {
+    try {
+      if (!isAdmin) return [];
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/auth/user`,
+      );
+
+      return data.users;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
+
   return (
     <AppContext.Provider
       value={{
-        users,
+        getAllUser,
         // blogs,
         currentUser,
         isAdmin,

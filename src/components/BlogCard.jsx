@@ -56,11 +56,7 @@ export default function BlogCard({
           className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-100 text-sm outline-none focus:border-indigo-500 transition-colors resize-y"
         />
 
-        {error && (
-          <p className="text-red-400 text-xs mt-2">
-            {error}
-          </p>
-        )}
+        {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
 
         <div className="flex gap-2 mt-3">
           <button
@@ -92,11 +88,13 @@ export default function BlogCard({
       </p>
 
       <div className="flex flex-wrap items-center gap-2 mt-3">
-        <span className="text-xs bg-indigo-900/40 text-indigo-400 rounded-md px-2 py-0.5">
-          {currentUser?.uniqueId === blog.userId?.uniqueId
-            ? "YOU"
-            : `@${blog.userId?.name}`}
-        </span>
+        {!JSON.parse(localStorage.getItem("is_admin") || "false") && (
+          <span className="text-xs bg-indigo-900/40 text-indigo-400 rounded-md px-2 py-0.5">
+            {currentUser?.uniqueId === blog.userId?.uniqueId
+              ? "YOU"
+              : `@${blog.userId?.name}`}
+          </span>
+        )}
 
         <span className="text-xs text-slate-600">
           {new Date(blog.createdAt).toLocaleDateString("en-IN", {

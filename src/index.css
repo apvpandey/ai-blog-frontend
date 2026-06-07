@@ -6,8 +6,14 @@ body {
   margin: 0;
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
-  background-color: #0f172a;
+  background: #06000f;
   color: #e2e8f0;
+  animation: cosmicShift 10s ease infinite;
+}
+
+@keyframes cosmicShift {
+  0%, 100% { background-color: #06000f; }
+  50%       { background-color: #9b5be4; }
 }
 
 ::-webkit-scrollbar {

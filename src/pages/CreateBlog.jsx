@@ -258,8 +258,6 @@ function AIGenerateModal({ onClose, onUse }) {
   );
 }
 
-// ─── Main CreateBlog Page ─────────────────────────────────────
-
 export default function CreateBlog() {
   const navigate = useNavigate();
   const { currentUser, createBlog, editBlog, deleteBlog, getMyBlogs } =
@@ -269,8 +267,6 @@ export default function CreateBlog() {
   const [content, setContent] = useState("");
   const [message, setMessage] = useState(null);
   const [showAIModal, setShowAIModal] = useState(false);
-
-  // const myBlogs = getMyBlogs();
 
   function showMsg(type, text) {
     setMessage({ type, text });
@@ -303,30 +299,20 @@ export default function CreateBlog() {
       <TopBar title={`Hi, ${currentUser?.name} 👋`} showLogout />
 
       <div className="max-w-2xl mx-auto px-4 py-8">
-        {/* <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-full bg-indigo-900/60 border border-indigo-700/40 flex items-center justify-center text-indigo-300 font-bold text-sm">
-            {currentUser?.name?.[0]?.toUpperCase()}
-          </div>
-          <div>
-            <p className="text-slate-200 font-semibold text-sm">
-              {currentUser?.name}
-            </p>
-            <p className="text-slate-600 text-xs">
-              ID: {currentUser?.uniqueId}
-            </p>
-          </div>
-          <span className="ml-auto text-xs bg-indigo-900/30 text-indigo-400 border border-indigo-700/30 px-2 py-1 rounded-lg">
-            {myBlogs.length} blog{myBlogs.length !== 1 ? "s" : ""}
-          </span>
-        </div> */}
-
-        {/* Create blog form */}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-8">
-          <h2 className="text-slate-100 font-bold text-base mb-5">
-            + New Blog Post
-          </h2>
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-slate-100 font-bold text-base">
+              Create Your Blog
+            </h2>
 
-          {/* Alert message */}
+            <button
+              onClick={() => navigate("/all-blog")}
+              className="text-sm font-medium text-indigo-400 hover:text-indigo-300 transition"
+            >
+              All Blog Posts →
+            </button>
+          </div>
+
           {message && (
             <div
               className={`mb-4 px-4 py-3 rounded-lg text-sm ${
@@ -365,7 +351,6 @@ export default function CreateBlog() {
             />
           </div>
 
-          {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 w-full">
             <button
               onClick={handlePost}
@@ -389,7 +374,6 @@ export default function CreateBlog() {
         </div>
       </div>
 
-      {/* AI Modal */}
       {showAIModal && (
         <AIGenerateModal
           onClose={() => setShowAIModal(false)}
