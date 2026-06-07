@@ -18,6 +18,7 @@ export default function TopBar({ title, showLogout = false }) {
       </span>
 
       {/* Page Title */}
+     
       <span className="text-slate-400 text-sm hidden sm:block">{title}</span>
 
       {/* Right side */}

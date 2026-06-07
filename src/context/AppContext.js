@@ -44,6 +44,7 @@ export function AppProvider({ children }) {
         },
       );
 
+      console.log(data.user);
       setCurrentUser(data.user);
 
       return {
@@ -62,34 +63,54 @@ export function AppProvider({ children }) {
   }
 
   // Login existing user
-  function loginUser(name) {
-    const trimmed = name.trim();
-    const user = users.find(
-      (u) => u.name.toLowerCase() === trimmed.toLowerCase(),
-    );
-    if (!user) {
+  async function loginUser(name) {
+    try {
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/auth/login`,
+        {
+          name,
+        },
+      );
+
+      setCurrentUser(data.data);
+
+      return {
+        success: true,
+        user: data.data,
+      };
+    } catch (error) {
       return {
         success: false,
-        error: "User not found. Please register first.",
+        error: error.response?.data?.message || error.message || "Login failed",
       };
     }
-    setCurrentUser(user);
-    return { success: true, user };
   }
-
   // Admin login
-  function loginAdmin(name, phone) {
-    if (
-      name.trim() === ADMIN_CREDENTIALS.name &&
-      phone.trim() === ADMIN_CREDENTIALS.phone
-    ) {
+  async function loginAdmin(name, phoneNo) {
+    try {
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/auth/admin-login`,
+        {
+          name,
+          phoneNo,
+        },
+      );
+
       setIsAdmin(true);
-      return { success: true };
+
+      return {
+        success: true,
+        admin: data.admin,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error:
+          error.response?.data?.message ||
+          error.message ||
+          "Admin login failed",
+      };
     }
-    return {
-      success: false,
-      error: "Invalid admin credentials. Try Admin / 9999999999",
-    };
   }
 
   // Logout (both user and admin)

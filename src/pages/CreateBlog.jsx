@@ -295,6 +295,8 @@ export default function CreateBlog() {
     showMsg("success", "AI content loaded! Review and post when ready. ✨");
   }
 
+
+
   return (
     <div className="min-h-screen bg-slate-950">
       <TopBar title={`Hi, ${currentUser?.name} 👋`} showLogout />

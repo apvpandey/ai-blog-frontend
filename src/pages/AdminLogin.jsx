@@ -10,12 +10,12 @@ export default function AdminLogin() {
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
 
-  function handleLogin() {
+  async function handleLogin() {
     if (!name.trim() || !phone.trim()) {
       setError('Please fill in both fields.');
       return;
     }
-    const result = loginAdmin(name, phone);
+    const result = await loginAdmin(name, phone);
     if (result.success) {
       navigate('/admin-dashboard');
     } else {

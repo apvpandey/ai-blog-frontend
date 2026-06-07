@@ -26,9 +26,9 @@ export default function UserAuth() {
     }
   }
 
-  function handleLogin() {
+  async function handleLogin() {
     if (!name.trim()) return showMsg("error", "Please enter your full name.");
-    const result = loginUser(name);
+    const result = await loginUser(name);
     if (result.success) {
       navigate("/create-blog");
     } else {
